@@ -1,16 +1,16 @@
 # tiny-pushgateway
 
-A **minimal**, ultra-lightweight, high-performance Go service for shipping metrics from short-lived jobs to Prometheus.
+A minimal, ultra-lightweight, high-performance Prometheus pushgateway with auto-clearing buffers, designed for ephemeral workloads and short-lived jobs.
 
 ---
 
 ## Why?
 
-**Short-lived jobs** (batch processes, cron jobs, CI/CD tasks) need to expose metrics to Prometheus, but they terminate before Prometheus can scrape them. The solution? Push metrics to an intermediate gateway that Prometheus can scrape.
+Short-lived jobs (batch processes, cron jobs, CI/CD tasks) terminate before Prometheus can scrape them directly. These workloads require an intermediate gateway to push metrics to, which Prometheus can then scrape.
 
 ### The Problem with Prometheus Pushgateway
 
-The [official Prometheus Pushgateway](https://github.com/prometheus/pushgateway) has a critical flaw for short-lived jobs: **it persists metrics indefinitely**. Once pushed, metrics remain in the gateway until explicitly deleted. This means:
+While the [official Prometheus Pushgateway](https://github.com/prometheus/pushgateway) provides this functionality, it has a critical flaw: **it persists metrics indefinitely**. Once pushed, metrics remain in the gateway until explicitly deleted. This causes:
 
 - **Stale metrics** accumulate and get scraped repeatedly
 - **Time series pollution** — Prometheus records the same value multiple times with different timestamps
@@ -21,9 +21,7 @@ This design violates Prometheus's pull model philosophy and is [explicitly docum
 
 ### How tiny-pushgateway Solves This
 
-**Auto-clearing buffer**: Metrics are exposed **once** and immediately cleared after Prometheus scrapes them. No stale data, no time series pollution, no manual cleanup.
-
-Think of it like an **OpenTelemetry Collector gateway** but for Prometheus metrics — a stateless relay that accepts pushes and exposes them for exactly one scrape cycle.
+A **stateless relay** with auto-clearing buffers — metrics are exposed **once** and immediately cleared after Prometheus scrapes them. No stale data, no time series pollution, no manual cleanup.
 
 Perfect for:
 - Kubernetes Jobs and CronJobs
@@ -39,7 +37,7 @@ Perfect for:
 tiny-pushgateway/
 ├── main.go # HTTP server (/push, /metrics)
 ├── main_test.go # unit & end-to-end tests
-├── Dockerfile # multi-stage build → ~4 MB distroless image
+├── Dockerfile # multi-stage build → ~7 MB distroless image
 ├── go.mod # Go 1.22 module definition
 └── README.md # you are here
 ```
