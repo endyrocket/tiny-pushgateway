@@ -6,19 +6,19 @@ A simple Helm chart for deploying the tiny-pushgateway application to Kubernetes
 
 ```bash
 # Install the chart
-helm install my-pushgateway ./chart
+helm install tiny-pushgateway ./chart
 
 # Install with custom values
-helm install my-pushgateway ./chart --set image.tag=v1.0.0
+helm install tiny-pushgateway ./chart --set image.tag=v1.0.0
 
 # Install with custom values file
-helm install my-pushgateway ./chart -f custom-values.yaml
+helm install tiny-pushgateway ./chart -f custom-values.yaml
 ```
 
 ## Uninstallation
 
 ```bash
-helm uninstall my-pushgateway
+helm uninstall tiny-pushgateway
 ```
 
 ## Configuration
@@ -28,7 +28,7 @@ The following table lists the configurable parameters of the chart and their def
 | Parameter | Description | Default |
 |-----------|-------------|---------|
 | `replicaCount` | Number of replicas | `1` |
-| `image.repository` | Image repository | `tiny-pushgateway` |
+| `image.repository` | Image repository | `endyrocket/tiny-pushgateway` |
 | `image.pullPolicy` | Image pull policy | `IfNotPresent` |
 | `image.tag` | Image tag | `latest` |
 | `service.type` | Service type | `ClusterIP` |
@@ -45,7 +45,7 @@ After installation, the tiny-pushgateway will be available at port 9091.
 ### Push metrics
 
 ```bash
-kubectl port-forward svc/my-pushgateway-tiny-pushgateway 9091:9091
+kubectl port-forward svc/tiny-pushgateway 9091:9091
 curl -X POST http://localhost:9091/push -d 'my_metric 123'
 ```
 
@@ -63,5 +63,5 @@ Add to your Prometheus configuration:
 scrape_configs:
   - job_name: 'tiny-pushgateway'
     static_configs:
-      - targets: ['my-pushgateway-tiny-pushgateway:9091']
+      - targets: ['tiny-pushgateway:9091']
 ```

@@ -1,7 +1,7 @@
 replicaCount: 1
 
 image:
-  repository: tiny-pushgateway
+  repository: endyrocket/tiny-pushgateway
   pullPolicy: IfNotPresent
   tag: "latest"
 

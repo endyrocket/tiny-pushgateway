@@ -78,10 +78,10 @@ docker run -p 9091:9091 tiny-pushgateway
 ### Kubernetes (Helm)
 ```bash
 # Install the chart
-helm install my-pushgateway ./chart
+helm install tiny-pushgateway ./chart
 
 # Get the pod name and port-forward
-export POD_NAME=$(kubectl get pods -l "app.kubernetes.io/name=tiny-pushgateway,app.kubernetes.io/instance=my-pushgateway" -o jsonpath="{.items[0].metadata.name}")
+export POD_NAME=$(kubectl get pods -l "app.kubernetes.io/name=tiny-pushgateway,app.kubernetes.io/instance=tiny-pushgateway" -o jsonpath="{.items[0].metadata.name}")
 kubectl port-forward $POD_NAME 9091:9091
 
 # Push metrics
@@ -97,19 +97,19 @@ scrape_configs:
   - job_name: 'tiny-pushgateway'
     scrape_interval: 15s
     static_configs:
-      - targets: ['my-pushgateway-tiny-pushgateway:9091']
+      - targets: ['tiny-pushgateway:9091']
 ```
 
 **Customize deployment:**
 ```bash
 # Set custom image and resources
-helm install my-pushgateway ./chart \
+helm install tiny-pushgateway ./chart \
   --set image.repository=myregistry/tiny-pushgateway \
   --set image.tag=v1.0.0 \
   --set resources.limits.memory=256Mi
 
 # Use custom values file
-helm install my-pushgateway ./chart -f custom-values.yaml
+helm install tiny-pushgateway ./chart -f custom-values.yaml
 ```
 
 See [`chart/README.md`](chart/README.md) for more configuration options.
